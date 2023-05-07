@@ -1,11 +1,18 @@
 <template>
   <div class="app">
     <h1>Страница с постами</h1>
-    <MyButton class="btn_create" @click="showDialog">Создать пост</MyButton>
+    <div class="app__btns">
+      <MyButton @click="showDialog">Создать пост</MyButton>
+      <MySelect v-model="selectedSort" :options="sortOptions"></MySelect>
+    </div>
     <MyDialog v-model:show="dialogVisible">
       <PostForm @create="createPost" />
     </MyDialog>
-    <PostList :posts="posts" @remove="removePost" v-if="!isPostsLoading" />
+    <PostList
+      :posts="sortedPosts"
+      @remove="removePost"
+      v-if="!isPostsLoading"
+    />
     <div v-else>Идет загрузка...</div>
   </div>
 </template>
@@ -27,6 +34,11 @@ export default {
       posts: [],
       dialogVisible: false,
       isPostsLoading: false,
+      selectedSort: '',
+      sortOptions: [
+        { value: 'title', name: 'По названию' },
+        { value: 'body', name: 'По содржанию' },
+      ],
     };
   },
   methods: {
@@ -57,6 +69,16 @@ export default {
   mounted() {
     this.fetchPosts();
   },
+  watch: {},
+  computed: {
+    sortedPosts() {
+      return [...this.posts].sort((item1, item2) => {
+        return item1[this.selectedSort]?.localeCompare(
+          item2[this.selectedSort]
+        );
+      });
+    },
+  },
 };
 </script>
 
@@ -71,7 +93,9 @@ export default {
   padding: 20px;
 }
 
-.btn_create {
+.app__btns {
   margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
 }
 </style>
