@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <h1>Страница с постами</h1>
+    <MyInput v-model="searchQuery" placeholder="Поиск..." />
     <div class="app__btns">
       <MyButton @click="showDialog">Создать пост</MyButton>
       <MySelect v-model="selectedSort" :options="sortOptions"></MySelect>
@@ -9,7 +10,7 @@
       <PostForm @create="createPost" />
     </MyDialog>
     <PostList
-      :posts="sortedPosts"
+      :posts="sortedAndSearchePosts"
       @remove="removePost"
       v-if="!isPostsLoading"
     />
@@ -22,12 +23,14 @@ import PostForm from './components/PostForm.vue';
 import PostList from './components/PostList.vue';
 import MyButton from './components/UI/MyButton.vue';
 import axios from 'axios';
+import MyInput from './components/UI/MyInput.vue';
 
 export default {
   components: {
     PostForm,
     PostList,
     MyButton,
+    MyInput,
   },
   data() {
     return {
@@ -35,6 +38,7 @@ export default {
       dialogVisible: false,
       isPostsLoading: false,
       selectedSort: '',
+      searchQuery: '',
       sortOptions: [
         { value: 'title', name: 'По названию' },
         { value: 'body', name: 'По содржанию' },
@@ -77,6 +81,11 @@ export default {
           item2[this.selectedSort]
         );
       });
+    },
+    sortedAndSearchePosts() {
+      return this.sortedPosts.filter((item) =>
+        item.title.toLowerCase().includes(this.searchQuery)
+      );
     },
   },
 };
