@@ -15,6 +15,17 @@
       v-if="!isPostsLoading"
     />
     <div v-else>Идет загрузка...</div>
+    <div class="page__wrapper">
+      <div
+        class="page"
+        :class="{ 'current-page': page === pageNumber }"
+        v-for="pageNumber in totalPages"
+        :key="pageNumber"
+        @click="changePage(pageNumber)"
+      >
+        {{ pageNumber }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -39,6 +50,9 @@ export default {
       isPostsLoading: false,
       selectedSort: '',
       searchQuery: '',
+      page: 1,
+      limit: 10,
+      totalPages: 0,
       sortOptions: [
         { value: 'title', name: 'По названию' },
         { value: 'body', name: 'По содржанию' },
@@ -56,11 +70,24 @@ export default {
     showDialog() {
       this.dialogVisible = true;
     },
+    changePage(pageNumber) {
+      this.page = pageNumber;
+      this.fetchPosts();
+    },
     async fetchPosts() {
       try {
         this.isPostsLoading = true;
         const response = await axios.get(
-          'https://jsonplaceholder.typicode.com/posts?_limit=10'
+          'https://jsonplaceholder.typicode.com/posts',
+          {
+            params: {
+              _page: this.page,
+              _limit: this.limit,
+            },
+          }
+        );
+        this.totalPages = Math.ceil(
+          response.headers['x-total-count'] / this.limit
         );
         this.posts = response.data;
       } catch (error) {
@@ -73,7 +100,11 @@ export default {
   mounted() {
     this.fetchPosts();
   },
-  watch: {},
+  watch: {
+    page() {
+      this.fetchPosts();
+    },
+  },
   computed: {
     sortedPosts() {
       return [...this.posts].sort((item1, item2) => {
@@ -106,5 +137,22 @@ export default {
   margin: 15px 0;
   display: flex;
   justify-content: space-between;
+}
+
+.page__wrapper {
+  display: flex;
+  margin-top: 15px;
+  gap: 15px;
+  justify-content: center;
+}
+
+.page {
+  border: 1px solid black;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.current-page {
+  border: 2px solid teal;
 }
 </style>
