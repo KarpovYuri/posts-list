@@ -4,6 +4,7 @@
     <div class="navbar__btns">
       <MyButton @click="$router.push('/posts')">Список постов</MyButton>
       <MyButton @click="$router.push('/about')">О приложении</MyButton>
+      <MyButton @click="$router.push('/store')">Store Vuex</MyButton>
     </div>
   </div>
 </template>
