@@ -139,7 +139,7 @@ export default {
     },
     sortedAndSearchePosts() {
       return this.sortedPosts.filter((item) =>
-        item.title.toLowerCase().includes(this.searchQuery)
+        item.title.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     },
   },

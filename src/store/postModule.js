@@ -25,7 +25,7 @@ export const postModule = {
     },
     sortedAndSearchePosts(state, getters) {
       return getters.sortedPosts.filter((item) =>
-        item.title.toLowerCase().includes(state.searchQuery)
+        item.title.toLowerCase().includes(state.searchQuery.toLowerCase())
       );
     },
   },
