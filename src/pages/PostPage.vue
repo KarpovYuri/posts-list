@@ -54,7 +54,7 @@ export default {
       totalPages: 0,
       sortOptions: [
         { value: 'title', name: 'По названию' },
-        { value: 'body', name: 'По содржанию' },
+        { value: 'body', name: 'По содержанию' },
       ],
     };
   },
